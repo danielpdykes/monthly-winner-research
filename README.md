@@ -64,6 +64,20 @@ Run `python scripts/audit.py` to recompute the independent input/workbook diagno
 
 `--monthly 500` changes the size of every deposit. This scales the existing strategy; it does not optimize or change its ranking rules. Results are reconciled against the supplied reference at the same scale.
 
+## Down-market analysis
+
+Open `downside.html`. It tests whether corrections, bear markets or crashes should change the monthly purchase, using month-end SPY drawdowns from the frozen data, and shows the rule's output for the latest data. It is research output, not investment advice. Headline: no regime override survived leave-one-episode-out and random-month placebo checks, so the tested rule stays a standard monthly purchase in every regime. Rebuild everything, in order:
+
+```sh
+python scripts/reproduce.py --allow-incomplete   # needs reproduced/
+python scripts/downside.py                       # regimes, per-regime strategies, sweep
+python scripts/long_history.py                   # 1926-2026 test from data/long_history
+python scripts/signal.py                         # live pick; needs network, writes data/live/ (git-ignored)
+python scripts/build_downside_page.py            # rebuild downside.html (--no-live omits the live card)
+```
+
+`python scripts/long_history.py --fetch NEW_DIR` re-downloads the French zips into a new empty directory; `scripts/alloc.py` is the shared simulator. Paused deposits earn the T-bill rate and are invested in the next month's purchase.
+
 ## Run through OpenAI’s Agents API and download the outputs
 
 This uses the **hosted Agents API**, `client.beta.agents.sessions`, not the local Agents SDK or an ordinary Responses request. The model is exactly `gpt-6.1-sol`, with reasoning effort `medium`.
@@ -99,6 +113,13 @@ The script retains `.agent-state.json` and refuses to start a duplicate session 
 - `data/report_data.json`: the same data embedded in the HTML.
 - `RESEARCH_PROMPT.txt`: full goal, assumptions, uncertainty rules, and required downloadable outputs.
 - `research_bundle.zip`: report, data, code, and documentation (excludes itself, generated media, secrets, and run state).
+
+Additional data added for the down-market analysis:
+
+- `data/spy_daily.csv`: daily SPY (close and adjusted close), January 1998 to October 12, 2026, from the Yahoo chart API, downloaded October 13, 2026. Used only to flag crash months; unofficial and subject to Yahoo's terms. Its October 9 close matches the frozen archive.
+- `data/long_history/`: monthly and daily market returns, the T-bill rate, and the value-weighted deciles by prior one-month return, from [Kenneth R. French's Data Library](https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html) (CRSP-based; 1926 to August 2026; files `F-F_Research_Data_Factors`, its daily version, and `10_Portfolios_Prior_1_0`). Cite Fama and French and the library when reusing.
+- `data/live/` (git-ignored): output of `scripts/signal.py`. It reads the current S&P 500 list from [datasets/s-and-p-500-companies](https://github.com/datasets/s-and-p-500-companies) and prices from the Yahoo chart API. Not cross-checked against a second source.
+- Derived outputs: `data/regimes.csv`, `regime_lots.csv`, `regime_strategies.csv`, `regime_sweep.csv`, `episodes.csv`, `downside_summary.json`, `long_history/long_history_grid.csv`.
 
 Public source reconstruction: [price data](https://github.com/Johnbrick123/sp500-data) and [historical members](https://github.com/fja05680/sp500). The original frozen source metadata identifies release 392203743 and a download date of October 12, 2026. The full original parquet files are not in the attachment; the frozen CSV subsets are sufficient to reproduce its reported approximation. Third-party data retains its providers’ terms; this project grants no new rights over those inputs.
 

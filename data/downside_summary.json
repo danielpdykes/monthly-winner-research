@@ -1,0 +1,56 @@
+{
+  "months": 348,
+  "correction_months": 118,
+  "bear_months": 65,
+  "crash_rule": "daily",
+  "crash_months": 39,
+  "crash_months_by_rule": {
+    "m10": 5,
+    "m7": 19,
+    "m5": 36,
+    "d5": 12,
+    "r20_10": 38,
+    "daily": 39
+  },
+  "crash_episodes": 17,
+  "top3_share_of_double_uplift": 0.9507425058433134,
+  "top_double_lots": [
+    {
+      "buy_date": "2003-03-03",
+      "ticker": "NVDA",
+      "extra_ending_value": 2355479.401120295
+    },
+    {
+      "buy_date": "2009-02-02",
+      "ticker": "MU",
+      "extra_ending_value": 280647.8886600531
+    },
+    {
+      "buy_date": "2001-04-02",
+      "ticker": "AMD",
+      "extra_ending_value": 22775.27933373556
+    },
+    {
+      "buy_date": "2009-03-02",
+      "ticker": "DHI",
+      "extra_ending_value": 19928.86310961283
+    },
+    {
+      "buy_date": "2019-01-02",
+      "ticker": "AVGO",
+      "extra_ending_value": 17632.40781360009
+    }
+  ],
+  "purchases_by_state": {
+    "normal": 218,
+    "bear": 47,
+    "correction": 42,
+    "post_crash": 39
+  },
+  "robust_action_by_state": {
+    "correction": "winner",
+    "bear": "winner",
+    "post_crash": "winner"
+  },
+  "caveat": "In-sample, 3 states, few independent episodes; 235/346 rankings incomplete."
+}
